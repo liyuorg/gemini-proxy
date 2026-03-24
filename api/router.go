@@ -72,5 +72,11 @@ func geminiProxy(w http.ResponseWriter, r *http.Request, reqURL string) {
 		return
 	}
 	defer resp.Body.Close()
-	io.Copy(w, resp.Body)
+	StreamData(resp.Body, w)
+}
+
+func StreamData(src io.Reader, dst io.Writer) error {
+	buf := make([]byte, 32) // Reusable buffer
+	_, err := io.CopyBuffer(dst, src, buf)
+	return err
 }
