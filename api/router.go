@@ -58,7 +58,14 @@ func geminiProxy(w http.ResponseWriter, r *http.Request, reqURL string) {
 		RespErr(w, err)
 		return
 	}
-	req.Header.Add("Content-Type", "application/json")
+	for k, v := range r.Header {
+		if k == "Mol" {
+			continue
+		}
+		for _, vv := range v {
+			req.Header.Add(k, vv)
+		}
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		RespErr(w, err)
